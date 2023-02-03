@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import model.entities.Reservation;
+import model.entities.exceptions.DomainException;
 
 public class Program {
 
@@ -12,37 +13,34 @@ public class Program {
 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		Scanner scan = new Scanner(System.in);
-
-		System.out.print("Room number: ");
-		int number = scan.nextInt();
-
-		System.out.print("Check-in date (dd/MM/yyyy): ");
-		LocalDate checkIn = LocalDate.parse(scan.next(), dtf);
-
-		System.out.print("Check-out date (dd/MM/yyyy): ");
-		LocalDate checkOut = LocalDate.parse(scan.next(), dtf);
-
-		if (!checkOut.isAfter(checkIn)) {
-			System.out.println("Error in reservation: Check-out date must be after check-in date");
-		} else {
+		
+		try {
+			System.out.print("Room number: ");
+			int number = scan.nextInt();
+	
+			System.out.print("Check-in date (dd/MM/yyyy): ");
+			LocalDate checkIn = LocalDate.parse(scan.next(), dtf);
+	
+			System.out.print("Check-out date (dd/MM/yyyy): ");
+			LocalDate checkOut = LocalDate.parse(scan.next(), dtf);
+	
 			Reservation reservation = new Reservation(number, checkIn, checkOut);
 			System.out.println("Reservation: " + reservation);
 			System.out.println();
-
+	
 			System.out.println("Enter data to update the reservation: ");
 			System.out.print("Check-in date (dd/MM/yyyy): ");
 			checkIn = LocalDate.parse(scan.next(), dtf);
 			System.out.print("Check-out date (dd/MM/yyyy): ");
 			checkOut = LocalDate.parse(scan.next(), dtf);
+	
+			reservation.updateDates(checkIn, checkOut);
+			System.out.println("Reservation: " + reservation);
 
-			String error = reservation.updateDates(checkIn, checkOut);
-			if (error != null) {
-				System.out.println("Error in reservation: " + error);
-			} else {
-				System.out.println("Reservation: " + reservation);
-			}
+		}  catch (DomainException e) {
+			System.out.println("Error in reservation: " + e.getMessage());
 		}
-
+		
 		scan.close();
 	}
 
