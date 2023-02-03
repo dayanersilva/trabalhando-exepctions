@@ -1,15 +1,18 @@
 package model.entities;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Reservation {
+	
+	private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	private Integer roomNumber;
-	private LocalDateTime chekIn;
-	private LocalDateTime checkOut;
+	private LocalDate chekIn;
+	private LocalDate checkOut;
 
-	public Reservation(Integer roomNumber, LocalDateTime chekIn, LocalDateTime checkOut) {
+	public Reservation(Integer roomNumber, LocalDate chekIn, LocalDate checkOut) {
 		this.roomNumber = roomNumber;
 		this.chekIn = chekIn;
 		this.checkOut = checkOut;
@@ -23,28 +26,36 @@ public class Reservation {
 		this.roomNumber = roomNumber;
 	}
 
-	public LocalDateTime getChekIn() {
+	public LocalDate getChekIn() {
 		return chekIn;
 	}
 
-	public LocalDateTime getCheckOut() {
+	public LocalDate getCheckOut() {
 		return checkOut;
 	}
 
 	public long duration() {
-		Duration tempo = Duration.between(chekIn, checkOut);
-		return tempo.toDays();
+		Duration temp = Duration.between(chekIn.atStartOfDay(), checkOut.atStartOfDay());
+		return temp.toDays();
 
 	}
 
-	public void updateDates(LocalDateTime checkIn, LocalDateTime checkOut) {
+	public void updateDates(LocalDate checkIn, LocalDate checkOut) {
 		this.chekIn = checkIn;
 		this.checkOut = checkOut;
 	}
 
 	@Override
 	public String toString() {
-		return "Room ";
+		return "Room "
+				+ roomNumber
+				+", check-in: "
+				+ dtf.format(chekIn)
+				+", check-out: "
+				+ dtf.format(checkOut)
+				+ ", " 
+				+ duration()
+				+" nights";
 	}
 
 }
